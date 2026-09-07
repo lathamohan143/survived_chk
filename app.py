@@ -21,8 +21,7 @@ import os
 # In[4]:
 
 
-import pandas as pd
-df=pd.read_csv("titanic.csv")
+
 
 
 # In[5]:
