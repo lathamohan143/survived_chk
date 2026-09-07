@@ -5,19 +5,17 @@
 
 
 import os
-os.getcwd()
+
 
 
 # In[2]:
 
 
-os.chdir(r"C:\Users\Mohan\OneDrive\Desktop\Python_WB")
+
 
 
 # In[3]:
 
-
-os.getcwd()
 
 
 # In[4]:
