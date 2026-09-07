@@ -4,64 +4,11 @@
 # In[1]:
 
 
-import os
-
-
-
-# In[2]:
-
-
-
-
-
-# In[3]:
-
-
-
-# In[4]:
-
-
-
-
-
-# In[5]:
-
-
-df.columns
-
-
-# In[6]:
-
-
-df = df.drop("PassengerId", axis=1)
-df = df.drop("Name", axis=1)
-df = df.drop("Ticket", axis=1)
 
 
 # In[7]:
 
 
-df["Deck"] = df["Cabin"].str[0]
-
-df["Deck"] = df["Deck"].fillna("Unknown")
-
-
-# In[8]:
-
-
-df = df.dropna()
-
-
-# In[9]:
-
-
-df.columns
-
-
-# In[10]:
-
-
-df = df.drop("Cabin", axis=1)
 
 
 # In[11]:
@@ -90,21 +37,10 @@ df["deck_encoded"] = deck_encoder.fit_transform(df["Deck"])
 # In[14]:
 
 
-df = df.drop("Sex", axis=1)
-df = df.drop("Embarked", axis=1)
-df = df.drop("Deck", axis=1)
 
 
 # In[15]:
 
-
-x=df[['Pclass','Age','SibSp','Parch','Fare','sex_encoded','embark_encoded','deck_encoded']]
-
-
-# In[16]:
-
-
-y=df['Survived']
 
 
 # In[17]:
