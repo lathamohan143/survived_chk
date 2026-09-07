@@ -1,0 +1,149 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[1]:
+
+
+import os
+os.getcwd()
+
+
+# In[2]:
+
+
+os.chdir(r"C:\Users\Mohan\OneDrive\Desktop\Python_WB")
+
+
+# In[3]:
+
+
+os.getcwd()
+
+
+# In[4]:
+
+
+import pandas as pd
+df=pd.read_csv("titanic.csv")
+
+
+# In[5]:
+
+
+df.columns
+
+
+# In[6]:
+
+
+df = df.drop("PassengerId", axis=1)
+df = df.drop("Name", axis=1)
+df = df.drop("Ticket", axis=1)
+
+
+# In[7]:
+
+
+df["Deck"] = df["Cabin"].str[0]
+
+df["Deck"] = df["Deck"].fillna("Unknown")
+
+
+# In[8]:
+
+
+df = df.dropna()
+
+
+# In[9]:
+
+
+df.columns
+
+
+# In[10]:
+
+
+df = df.drop("Cabin", axis=1)
+
+
+# In[11]:
+
+
+#before giving as input and output just do the encoding for the three columns
+from sklearn.preprocessing import LabelEncoder
+sex_encoder=LabelEncoder()
+df["sex_encoded"] = sex_encoder.fit_transform(df["Sex"])
+
+
+# In[12]:
+
+
+embarked_encoder=LabelEncoder()
+df["embark_encoded"] = sex_encoder.fit_transform(df["Embarked"])
+
+
+# In[13]:
+
+
+deck_encoder=LabelEncoder()
+df["deck_encoded"] = deck_encoder.fit_transform(df["Deck"])
+
+
+# In[14]:
+
+
+df = df.drop("Sex", axis=1)
+df = df.drop("Embarked", axis=1)
+df = df.drop("Deck", axis=1)
+
+
+# In[15]:
+
+
+x=df[['Pclass','Age','SibSp','Parch','Fare','sex_encoded','embark_encoded','deck_encoded']]
+
+
+# In[16]:
+
+
+y=df['Survived']
+
+
+# In[17]:
+
+
+#train and create linear regression model
+from sklearn.model_selection import train_test_split
+xtrain,xtest,ytrain,ytest=train_test_split(x,y,test_size=0.20)
+
+
+# In[18]:
+
+
+from sklearn.linear_model import LinearRegression
+model=LinearRegression()
+model.fit(xtrain,ytrain)
+
+
+# In[19]:
+
+
+import joblib
+
+joblib.dump(model, 'titanic_model.pkl')
+
+
+# In[22]:
+
+
+joblib.dump(sex_encoder, 'sex_encoder.pkl')
+joblib.dump(embarked_encoder, 'embark_encoder.pkl')
+joblib.dump(deck_encoder, 'deck_encoder.pkl')
+
+
+# In[ ]:
+
+
+
+
