@@ -1,82 +1,36 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
-
-
-# In[7]:
-
-
-
-
-# In[11]:
-
-
-#before giving as input and output just do the encoding for the three columns
-from sklearn.preprocessing import LabelEncoder
-sex_encoder=LabelEncoder()
-df["sex_encoded"] = sex_encoder.fit_transform(df["Sex"])
-
-
-# In[12]:
-
-
-embarked_encoder=LabelEncoder()
-df["embark_encoded"] = sex_encoder.fit_transform(df["Embarked"])
-
-
-# In[13]:
-
-
-deck_encoder=LabelEncoder()
-df["deck_encoded"] = deck_encoder.fit_transform(df["Deck"])
-
-
-# In[14]:
-
-
-
-
-# In[15]:
-
-
-
-# In[17]:
-
-
-#train and create linear regression model
-from sklearn.model_selection import train_test_split
-xtrain,xtest,ytrain,ytest=train_test_split(x,y,test_size=0.20)
-
-
-# In[18]:
-
-
-from sklearn.linear_model import LinearRegression
-model=LinearRegression()
-model.fit(xtrain,ytrain)
-
-
-# In[19]:
-
-
+import streamlit as st
+import pandas as pd
 import joblib
 
-joblib.dump(model, 'titanic_model.pkl')
+# Load model and encoders
+model = joblib.load('titanic_model.pkl')
+sex_encoder = joblib.load('sex_encoder.pkl')
+embark_encoder = joblib.load('embark_encoder.pkl')
+deck_encoder = joblib.load('deck_encoder.pkl')
 
+st.title("Titanic Survival Predictor")
 
-# In[22]:
+# User inputs
+pclass = st.selectbox("Passenger Class", [1, 2, 3])
+age = st.number_input("Age", min_value=0, max_value=100, value=25)
+sibsp = st.number_input("Siblings/Spouses aboard", min_value=0, max_value=10, value=0)
+parch = st.number_input("Parents/Children aboard", min_value=0, max_value=10, value=0)
+fare = st.number_input("Fare", min_value=0.0, value=32.0)
+sex = st.selectbox("Sex", sex_encoder.classes_)
+embarked = st.selectbox("Embarked", embark_encoder.classes_)
+deck = st.selectbox("Deck", deck_encoder.classes_)
 
+if st.button("Predict"):
+    sex_enc = sex_encoder.transform([sex])[0]
+    embark_enc = embark_encoder.transform([embarked])[0]
+    deck_enc = deck_encoder.transform([deck])[0]
 
-joblib.dump(sex_encoder, 'sex_encoder.pkl')
-joblib.dump(embarked_encoder, 'embark_encoder.pkl')
-joblib.dump(deck_encoder, 'deck_encoder.pkl')
+    input_df = pd.DataFrame([[pclass, age, sibsp, parch, fare, sex_enc, embark_enc, deck_enc]],
+                             columns=['Pclass', 'Age', 'SibSp', 'Parch', 'Fare',
+                                      'sex_encoded', 'embark_encoded', 'deck_encoded'])
 
+    prediction = model.predict(input_df)[0]
+    result = "Survived ✅" if prediction > 0.5 else "Did not survive ❌"
 
-# In[ ]:
-
-
-
-
+    st.subheader(result)
+    st.write(f"Raw model output: {prediction:.3f}")
